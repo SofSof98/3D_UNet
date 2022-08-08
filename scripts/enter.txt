@@ -1,0 +1,2 @@
+python3 scripts/main.py --data_dir data/Images --txt_dir data/images.txt  --results_dir results/my_train_results_batches/  --loss dice --augmentation False --scheduling_lr lrscheduler --dr 0.1
+

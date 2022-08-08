@@ -1,0 +1,2 @@
+optimizer: 'adam'
+test_batch_size: 1

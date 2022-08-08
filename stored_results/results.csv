@@ -1,0 +1,2 @@
+model,training epochs,loss function,optimizer,lr,lr scheduling,normalization,augmentation,filter scale,batch_size,val loss,epoch,val dice,epoch,val iou,epoch,test ce loss,test dice,test iou
+unet deep,1200,dice,adam,0.0001,No,global,No,1,1,0.4,1000,0.5,400,0.6,600,0.44,0.4,0.4
