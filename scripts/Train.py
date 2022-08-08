@@ -35,9 +35,9 @@ def train(opt):
     
     # Divide data into training, validation and test set.
     train, validation, test = utils.divide_data(len(files), opt)
-    train = [0,1]
-    validation = [2,3]
-    test = [3]
+    #train = [0,1]
+    #validation = [2,3]
+    #test = [3]
     train_patients = [files[i] for i in train]
     validation_patients = [files[i] for i in validation]
     test_patients = [files[i] for i in test]
@@ -106,8 +106,8 @@ def train(opt):
 
         for iteration, idx in enumerate(train,1):
             # Load data.
-            data, lesion = x_train[idx], mask_train[idx]
-            p_id = train_patients[idx]
+            data, lesion = x_train[iteration-1], mask_train[iteration-1]
+            p_id = train_patients[iteration-1]
 
             if opt.batch_size == 1:
                 model.optimize_parameters(data, lesion)
@@ -158,7 +158,7 @@ def train(opt):
                 val_losses[0].append(model.get_loss())
                 prediction = model.get_prediction(lesion).cpu().detach().numpy()
                 val_losses = utils.compute_losses(prediction, lesion.squeeze().cpu().detach().numpy(), val_losses)
-                val_losses[8].append(metrics.IoU_coeff(model.get_prediction(lesion), lesion.float()).cpu().detach().numpy())
+                val_losses[8].append(model.get_iou_score(lesion))
                 model.print_val_stats(epoch, val_losses[1][-1], val_losses[8][-1])
                 with open(results_path + "/validation_results.csv", "a", newline="") as file:
                     writer = csv.writer(file, delimiter=",", quotechar='|', quoting=csv.QUOTE_MINIMAL)

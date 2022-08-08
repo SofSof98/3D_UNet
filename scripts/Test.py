@@ -34,12 +34,12 @@ def test(opt):
         files = [x.strip() for x in file.readlines()]
 
     train, validation, test = utils.divide_data(len(files), opt)
-    train = [0,1]
-    validation = [2,3]
-    test = [3]
+    #train = [0,1]
+    #validation = [2,3]
+    #test = [3]
     test_patients = [files[i] for i in test]
-    test = dict(test = test_patients)
-    test_loader = rd.DataLoader(list_IDs=test['test'], directory=opt.data_dir,
+    testing = dict(test = test_patients)
+    test_loader = rd.DataLoader(list_IDs=testing['test'], directory=opt.data_dir,
                                  dtype = opt.image_type,norm=opt.normalize,augmentation=None,
                                  n_channels=1,train=True)
 
@@ -89,7 +89,7 @@ def test(opt):
             prediction = model.get_prediction(lesion).cpu().detach().numpy()
             detailed_test_loss[0].append(model.get_loss())
             detailed_test_loss = utils.compute_losses(prediction, lesion.squeeze().cpu().detach().numpy(), detailed_test_loss)
-            detailed_test_loss[8].append(metrics.IoU_coeff(model.get_prediction(lesion), lesion.float()).cpu().detach().numpy())
+            detailed_test_loss[8].append(model.get_iou_score(lesion))
 
             model.print_test_stats(idx, p_id, detailed_test_loss[1][-1], detailed_test_loss[8][-1])
 

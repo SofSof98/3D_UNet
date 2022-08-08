@@ -107,9 +107,15 @@ class Training_Model():
        
      
      def get_score (self, target):
+          target = target.to(self.device)
           pred = torch.where(self.y_pred.squeeze() > 0.5, 1, 0)
           return metrics.dice_coeff(pred.squeeze(), target.float()).cpu().detach().numpy()
-     
+    
+     def get_iou_score (self, target):
+          target = target.to(self.device)
+          pred = torch.where(self.y_pred.squeeze() > 0.5, 1, 0)
+          return metrics.IoU_coeff(pred.squeeze(), target.float()).cpu().detach().numpy()
+ 
      def get_loss(self):
           return self.loss.item()
      
