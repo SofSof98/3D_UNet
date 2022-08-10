@@ -41,11 +41,11 @@ def test(opt):
     testing = dict(test = test_patients)
     test_loader = rd.DataLoader(list_IDs=testing['test'], directory=opt.data_dir,
                                  dtype = opt.image_type,norm=opt.normalize,augmentation=None,
-                                 n_channels=1,train=True)
+                                 n_channels=opt.n_channels,train=True)
 
      # Create folders and files.
     utils.create_folder(results_path)
-    utils.store_results(results_path, opt,train = True)
+    utils.store_results(results_path, opt,train = False)
     
     # Write options into a file.
     with open(results_path + '/test_options.txt', 'w') as f:
@@ -86,7 +86,7 @@ def test(opt):
             p_id = test_patients[idx]
         
             model.validate(data, lesion)  
-            prediction = model.get_prediction(lesion).cpu().detach().numpy()
+            prediction = model.get_prediction().cpu().detach().numpy()
             detailed_test_loss[0].append(model.get_loss())
             detailed_test_loss = utils.compute_losses(prediction, lesion.squeeze().cpu().detach().numpy(), detailed_test_loss)
             detailed_test_loss[8].append(model.get_iou_score(lesion))
@@ -104,14 +104,14 @@ def test(opt):
                 overall_test_loss.append(np.mean(detailed_test_loss[i]))
 
             # Writing overall test loss in file.
-            with open(results_path + "/test_results.csv", "a", newline="") as file:
+        with open(results_path + "/test_results.csv", "a", newline="") as file:
                 writer = csv.writer(file, delimiter=",", quotechar='|', quoting=csv.QUOTE_MINIMAL)
                 writer.writerow([idx, np.mean(detailed_test_loss[0]), np.mean(detailed_test_loss[1]), np.median(detailed_test_loss[1]), np.mean(detailed_test_loss[8]), np.median(detailed_test_loss[8]), np.mean(detailed_test_loss[2]), np.median(detailed_test_loss[2]),\
             np.mean(detailed_test_loss[3]), np.median(detailed_test_loss[3]), np.mean(detailed_test_loss[4]), np.mean(detailed_test_loss[5]), np.mean(detailed_test_loss[6]), np.median(detailed_test_loss[6]),\
             np.mean(detailed_test_loss[7]), np.median(detailed_test_loss[7]), np.std(detailed_test_loss[1]), np.std(detailed_test_loss[2]), np.std(detailed_test_loss[3]), np.std(detailed_test_loss[4]),\
             np.std(detailed_test_loss[5]), np.std(detailed_test_loss[6]), np.std(detailed_test_loss[7])])
 
-            print("Completed testing in with\n overall cross entropy loss: {}, dice coefficient: {}".format(overall_test_loss[0], overall_test_loss[1]))
+        print("Completed testing in with\n overall cross entropy loss: {}, dice coefficient: {}".format(overall_test_loss[0], overall_test_loss[1]))
 
 
 if __name__ == "__main__":
@@ -135,4 +135,4 @@ if __name__ == "__main__":
 
     opt = parser.parse_args()
     print('Testing ...')
-    test.test(opt)
+    test(opt)

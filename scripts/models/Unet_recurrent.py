@@ -20,18 +20,18 @@ class Unet_3D(nn.Module):
 
         self.maxpool = nn.MaxPool3d(kernel_size=2, stride=2)
         # downsampling
-        self.conv_block_1 = RCNN_block(self.in_channels, filters[0] // 2, filters[0], batchNormObject ,time=2,dr =opr.dr) 
-        self.conv_block_2 = RCNN_block(filters[0], filters[0], filters[1], batchNormObject ,time=2,dr =opr.dr)
-        self.conv_block_3 = RCNN_block(filters[1], filters[1], filters[2],batchNormObject ,time=2,dr =opr.dr)
+        self.conv_block_1 = RCNN_block(self.in_channels, filters[0] // 2, filters[0], batchNormObject ,time=2,dr =opt.dr) 
+        self.conv_block_2 = RCNN_block(filters[0], filters[0], filters[1], batchNormObject ,time=2,dr =opt.dr)
+        self.conv_block_3 = RCNN_block(filters[1], filters[1], filters[2],batchNormObject ,time=2,dr =opt.dr)
         
 
         
-        self.center_block = RCNN_block(filters[2], filters[2], filters[3],batchNormObject ,time=2,dr =opr.dr)
+        self.center_block = RCNN_block(filters[2], filters[2], filters[3],batchNormObject ,time=2,dr =opt.dr)
 
         # upsampling
-        self.up_concat3 = Up_Conv_3D(filters[3], filters[3], filters[2], block =RCNN_block, batchNormObject=batchNormObject ,time=2,dr =opr.dr)
-        self.up_concat2 = Up_Conv_3D(filters[2], filters[2], filters[1], block =RCNN_block, batchNormObject=batchNormObject ,time=2,dr =opr.dr)
-        self.up_concat1 = Up_Conv_3D(filters[1], filters[1], filters[0], block =RCNN_block, batchNormObject=batchNormObject ,time=2,dr =opr.dr)
+        self.up_concat3 = Up_Conv_3D(filters[3], filters[3], filters[2], block =RCNN_block, batchNormObject=batchNormObject ,time=2,dr =opt.dr)
+        self.up_concat2 = Up_Conv_3D(filters[2], filters[2], filters[1], block =RCNN_block, batchNormObject=batchNormObject ,time=2,dr =opt.dr)
+        self.up_concat1 = Up_Conv_3D(filters[1], filters[1], filters[0], block =RCNN_block, batchNormObject=batchNormObject ,time=2,dr =opt.dr)
 
         # final conv (without any concat)
         self.final = Output_block_binary(filters[0], 1)

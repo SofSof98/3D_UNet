@@ -21,7 +21,6 @@ class DataLoader():
         self.augmentation = augmentation
 
     def Loading(self):
-
         if self.train:
             X, y = self.Data_loading()
             # printing(X, y)
@@ -54,7 +53,7 @@ class DataLoader():
             contour, _ = image_loader(self.directory + '/' + ID + '/prostate.' + self.dtype)
 
             # set everything outside the prostate to zero
-            x_cut, prost_cut  = cut_pet(pet, contour, normalization=self.norm,concat=True)
+            x_cut, prost_cut  = cut_pet(pet, contour, n_channel =self.n_channels , normalization=self.norm,concat=True)
             if self.n_channels ==1:
                 x_cut =  np.where(prost_cut == 1.0, x_cut, 0.0)
             elif self.n_channels > 1:
@@ -66,9 +65,9 @@ class DataLoader():
                 # Store cut lesion
                 lesion, _ = image_loader(self.directory + '/' + ID + '/l1.' + self.dtype)
                 #lesion = np.multiply(lesion, contour)
-                y_cut = cut_pet(lesion, contour, normalization='none')
-                y_cut = np.where(y_cut > 0, 1.0, 0)
-                y_cut = np.where(prost_cut == 1.0, y_cut, 0.0)
+                y_cut = cut_pet(lesion, contour,n_channel =self.n_channels , normalization=None)
+                y_cut = np.where(y_cut > 0, 1., 0.)
+                y_cut = np.where(prost_cut == 1.,np.float32(y_cut), 0.)
                 
                 ## Data_Augmentation
                 # to do
@@ -79,13 +78,13 @@ class DataLoader():
                                                      height_shift_range=5, horizontal_flip=True, vertical_flip=False,
                                                      fill_mode='nearest', order=3)
 
-                X[i,] = torch.tensor(x_cut)
-                y[i,] = torch.tensor(y_cut)
+                X[i,] = torch.tensor(np.float32(x_cut), dtype=torch.float32)
+                y[i,] = torch.tensor(np.float32(y_cut), dtype=torch.float32)
 
 
             else:
 
-                X[i,] = torch.tensor(x_cut)
+                X[i,] = torch.tensor(x_cut, dtype=torch.float32)
 
         return X, y
 

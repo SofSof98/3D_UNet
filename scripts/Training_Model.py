@@ -34,6 +34,7 @@ class Training_Model():
                self.loss = self.loss_fn(self.y_pred.squeeze(), target.float())
           else:
                self.loss = self.loss_fn(self.y_pred.squeeze(0), target)
+          self.loss.requires_grad_(True)
           self.loss.backward()
           #self.loss_norm = self.loss/self.opt.batch_size
           #self.loss_norm.backward()
@@ -64,7 +65,8 @@ class Training_Model():
           if  (len(idx_train) - iteration) < len(idx_train)%self.opt.batch_size:
                self.opt.batch_size = self.opt.batch_size - len(idx_train)%self.opt.batch_size
                print('new:',self.opt.batch_size)
-               
+
+          self.loss.requires_grad_(True)     
           self.loss_norm = self.loss/self.opt.batch_size
           self.loss_norm.backward()
           
@@ -101,19 +103,19 @@ class Training_Model():
           else:
                  self.loss = loss_fn(y_pred.squeeze(0), target)
     
-     def get_prediction(self, target):
+     def get_prediction(self):
           pred = torch.where(self.y_pred.squeeze() > 0.5, 1, 0)
-          return pred
+          return pred.float()
        
      
      def get_score (self, target):
           target = target.to(self.device)
-          pred = torch.where(self.y_pred.squeeze() > 0.5, 1, 0)
+          pred = torch.where(self.y_pred.squeeze() > 0.5, 1, 0).float()
           return metrics.dice_coeff(pred.squeeze(), target.float()).cpu().detach().numpy()
     
      def get_iou_score (self, target):
           target = target.to(self.device)
-          pred = torch.where(self.y_pred.squeeze() > 0.5, 1, 0)
+          pred = torch.where(self.y_pred.squeeze() > 0.5, 1, 0).float()
           return metrics.IoU_coeff(pred.squeeze(), target.float()).cpu().detach().numpy()
  
      def get_loss(self):

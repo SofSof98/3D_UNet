@@ -156,7 +156,7 @@ def train(opt):
 
                 model.validate(data, lesion)
                 val_losses[0].append(model.get_loss())
-                prediction = model.get_prediction(lesion).cpu().detach().numpy()
+                prediction = model.get_prediction().cpu().detach().numpy()
                 val_losses = utils.compute_losses(prediction, lesion.squeeze().cpu().detach().numpy(), val_losses)
                 val_losses[8].append(model.get_iou_score(lesion))
                 model.print_val_stats(epoch, val_losses[1][-1], val_losses[8][-1])

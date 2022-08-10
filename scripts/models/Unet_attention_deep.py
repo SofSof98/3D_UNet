@@ -12,7 +12,7 @@ class Unet_3D(nn.Module):
         self.feature_scale = opt.filter_scale
         self.norm_type = opt.norm_type
         self.is_conv = is_conv
-        
+        self.deep_supervision = opt.dv        
         batchNormObject = lambda n_filters: nn.GroupNorm(opt.n_groups, n_filters) if self.norm_type != 'batch' else nn.BatchNorm3d(n_filters) 
     
         filters = [64, 128, 256, 512, 1024]

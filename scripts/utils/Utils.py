@@ -13,10 +13,16 @@ from medpy.metric.binary import hd, dc, asd, assd, precision,\
     sensitivity, specificity
 
 ## add your meand and sd in the function
-def cut_pet(pet_array, prostate_array, pitch=5, new_size=64,
-            normalization='local', mean=1.8105808395450398, sd=6.211471196036908, train=False, concat=False):
+def cut_pet_old(pet_array, prostate_array, pitch=5, new_size=64,
+            normalization='local', n_channel = 1, train=False, concat=False):
 
-    
+ 	
+    if n_channel == 1:
+        mean =  0.10223833057966272
+        sd = 0.9130426563428523
+    elif n_channel > 1:
+    	mean=1.8105808395450398
+    	sd=6.211471196036908
     prostate = np.where(prostate_array == 1)
     # 3D array (x,y,z) for prostate segmenatation
     x = prostate[0]
@@ -49,7 +55,7 @@ def cut_pet(pet_array, prostate_array, pitch=5, new_size=64,
     min_z = min_z - offset_z
 
     pet_cut = pet_array[min_x:max_x, min_y:max_y, min_z:max_z]
-
+    pet_cut = np.float32(pet_cut)
     if normalization == 'local':
         pet_cut = (pet_cut - pet_cut.min()) / (pet_cut.max() - pet_cut.min())
     elif normalization == 'global':
@@ -57,14 +63,22 @@ def cut_pet(pet_array, prostate_array, pitch=5, new_size=64,
 	
     if concat:
         prostate_cut = prostate_array[min_x:max_x, min_y:max_y, min_z:max_z]
-        return pet_cut, prostate_cut
+        return  np.float32(pet_cut),np.float32(prostate_cut)
     # pet = tf.convert_to_tensor(pet_cut, dtype = 'float32')
     # print(tf.shape(pet))
     else:
-        return pet_cut
+        return  np.float32(pet_cut)
 
-def cut_pet_old(pet_array, prostate_array, pitch=5, new_size=64,
-            normalization='local', mean= 1.8559975107510884, sd= 6.96905075416415, train=False, concat=False):
+def cut_pet(pet_array, prostate_array, pitch=5, new_size=64,
+            normalization='local', n_channel = 1, train=False, concat=False):
+
+
+    if n_channel == 1:
+        mean =  0.10223833057966272
+        sd= 0.9130426563428523
+    elif n_channel > 1:
+        mean=1.8105808395450398
+        sd=6.211471196036908
 
 
     prostate = np.where(prostate_array == 1)
@@ -109,7 +123,7 @@ def cut_pet_old(pet_array, prostate_array, pitch=5, new_size=64,
         else:
             min_z -= 1
     pet_cut = pet_array[min_x:max_x, min_y:max_y, min_z:max_z]
-
+    pet_cut =  np.float32(pet_cut)
     if normalization == 'local':
         pet_cut = (pet_cut - pet_cut.min()) / (pet_cut.max() - pet_cut.min())
     elif normalization == 'global':
@@ -117,11 +131,11 @@ def cut_pet_old(pet_array, prostate_array, pitch=5, new_size=64,
 
     if concat:
         prostate_cut = prostate_array[min_x:max_x, min_y:max_y, min_z:max_z]
-        return pet_cut, prostate_cut
+        return  np.float32(pet_cut),np.float32(prostate_cut)
     # pet = tf.convert_to_tensor(pet_cut, dtype = 'float32')
     # print(tf.shape(pet))
     else:
-        return pet_cut
+        return  np.float32(pet_cut)
 
 
 def store_results(results_path, opt,train = True):

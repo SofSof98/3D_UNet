@@ -56,7 +56,7 @@ def get_parser():
   
     parser.add_argument('--training', type=arg_boolean, default=True, help='training or testing mode')
     parser.add_argument('--direct_test', type=arg_boolean, default=True, help='....')
-   
+    parser.add_argument('--dv', type=arg_boolean, default=False, help='....')
     parser.add_argument('--model-args',type=dict, default=dict(), help='the arguments of model')
   
     return parser

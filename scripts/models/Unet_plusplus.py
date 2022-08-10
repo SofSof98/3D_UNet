@@ -4,7 +4,7 @@ from models.Unet_utils import *
 
 class Unet_3D(nn.Module):
 
-    def __init__(elf, input_shape, output_shape, opt, num_classes = 2 ,is_deconv = True, deep_supervision = True):
+    def __init__(self, input_shape, output_shape, opt, num_classes = 2 ,is_deconv = True, deep_supervision = True):
         super(Unet_3D, self).__init__()
 
         self.in_channels = opt.n_channels
@@ -25,24 +25,24 @@ class Unet_3D(nn.Module):
         
         self.maxpool = nn.MaxPool3d(kernel_size=2, stride=2)
         # downsampling
-        self.conv_block_1 = Conv_3D_block(self.in_channels, filters[0], filters[0], self.is_batchnorm, batchNormObject, opr.dr)
-        self.conv_block_2 = Conv_3D_block(filters[0], filters[1], filters[1], self.is_batchnorm, batchNormObject, opr.dr)
-        self.conv_block_3 = Conv_3D_block(filters[1], filters[2], filters[2], self.is_batchnorm, batchNormObject, opr.dr)
-        self.conv_block_4 = Conv_3D_block(filters[2], filters[3], filters[3], self.is_batchnorm, batchNormObject, opr.dr)
-        self.center_block = Conv_3D_block(filters[3], filters[4], filters[4], self.is_batchnorm, batchNormObject, opr.dr)
+        self.conv_block_1 = Conv_3D_block(self.in_channels, filters[0], filters[0], self.is_batchnorm, batchNormObject, opt.dr)
+        self.conv_block_2 = Conv_3D_block(filters[0], filters[1], filters[1], self.is_batchnorm, batchNormObject, opt.dr)
+        self.conv_block_3 = Conv_3D_block(filters[1], filters[2], filters[2], self.is_batchnorm, batchNormObject, opt.dr)
+        self.conv_block_4 = Conv_3D_block(filters[2], filters[3], filters[3], self.is_batchnorm, batchNormObject, opt.dr)
+        self.center_block = Conv_3D_block(filters[3], filters[4], filters[4], self.is_batchnorm, batchNormObject, opt.dr)
 
         # upsampling
-        self.up_concat01 = Nested_block(filters[1], filters[0], filters[0],self.deconv, self.is_batchnorm, batchNormObject, opr.dr)
-        self.up_concat02 = Nested_block(filters[1], filters[0]*2, filters[0],self.deconv, self.is_batchnorm, batchNormObject, opr.dr)
-        self.up_concat03 = Nested_block(filters[1], filters[0]*3, filters[0], self.deconv, self.is_batchnorm, batchNormObject, opr.dr)
-        self.up_concat11 = Nested_block(filters[2],filters[1], filters[1],self.deconv, self.is_batchnorm, batchNormObject, opr.dr)
-        self.up_concat12 = Nested_block(filters[2], filters[1]*2, filters[1], self.deconv, self.is_batchnorm, batchNormObject, opr.dr)
-        self.up_concat21 = Nested_block(filters[3] , filters[2], filters[2], self.deconv, self.is_batchnorm, batchNormObject, opr.dr)
+        self.up_concat01 = Nested_block(filters[1], filters[0], filters[0],self.deconv, self.is_batchnorm, batchNormObject, opt.dr)
+        self.up_concat02 = Nested_block(filters[1], filters[0]*2, filters[0],self.deconv, self.is_batchnorm, batchNormObject, opt.dr)
+        self.up_concat03 = Nested_block(filters[1], filters[0]*3, filters[0], self.deconv, self.is_batchnorm, batchNormObject, opt.dr)
+        self.up_concat11 = Nested_block(filters[2],filters[1], filters[1],self.deconv, self.is_batchnorm, batchNormObject, opt.dr)
+        self.up_concat12 = Nested_block(filters[2], filters[1]*2, filters[1], self.deconv, self.is_batchnorm, batchNormObject, opt.dr)
+        self.up_concat21 = Nested_block(filters[3] , filters[2], filters[2], self.deconv, self.is_batchnorm, batchNormObject, opt.dr)
 	
-        self.up_concat22 = Nested_block(filters[3],filters[2]*2, filters[2],self.deconv, self.is_batchnorm, batchNormObject, opr.dr)
-        self.up_concat13 = Nested_block(filters[2], filters[1]*3, filters[1], self.deconv, self.is_batchnorm, batchNormObject, opr.dr)
-        self.up_concat31 = Nested_block(filters[4] , filters[3], filters[3], self.deconv, self.is_batchnorm, batchNormObject, opr.dr)
-        self.up_concat04 = Nested_block(filters[1], filters[0]*4, filters[0], self.deconv, self.is_batchnorm, batchNormObject, opr.dr)
+        self.up_concat22 = Nested_block(filters[3],filters[2]*2, filters[2],self.deconv, self.is_batchnorm, batchNormObject, opt.dr)
+        self.up_concat13 = Nested_block(filters[2], filters[1]*3, filters[1], self.deconv, self.is_batchnorm, batchNormObject, opt.dr)
+        self.up_concat31 = Nested_block(filters[4] , filters[3], filters[3], self.deconv, self.is_batchnorm, batchNormObject, opt.dr)
+        self.up_concat04 = Nested_block(filters[1], filters[0]*4, filters[0], self.deconv, self.is_batchnorm, batchNormObject, opt.dr)
 
         # final conv (without any concat)
         self.final = nn.Conv3d(filters[0], 1, 1)
