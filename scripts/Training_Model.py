@@ -132,3 +132,9 @@ class Training_Model():
     
      def print_test_stats(self, idx, p_id, dice, iou):
           print("img idx: {}, p_id: {}, loss: {}, dice coeff.: {}, IoU coeff.: {}".format(idx, p_id, self.loss, dice, iou))
+
+     def update_lr(self):
+          
+        utils.update_learning_rate(scheduler, metric=val_loss, epoch=None)
+
+            

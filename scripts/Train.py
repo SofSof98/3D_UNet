@@ -165,16 +165,17 @@ def train(opt):
                     writer.writerow([epoch, idx, val_losses[0][-1], val_losses[1][-1], val_losses[8][-1], val_losses[2][-1],\
                         val_losses[3][-1], val_losses[4][-1], val_losses[5][-1], val_losses[6][-1], val_losses[7][-1], p_id])
                 
-
-                
+        # update learning rate
+        if opt.scheduling_lr is not None:
+            model.update_lr
                 
                 
         with open(results_path + "/validation_results_summary.csv", "a", newline="") as file:
                 writer = csv.writer(file, delimiter=",", quotechar='|', quoting=csv.QUOTE_MINIMAL)
                 writer.writerow([epoch, np.mean(val_losses[0]), np.mean(val_losses[1]),np.mean(val_losses[8]),np.mean(val_losses[2]),\
                         np.mean(val_losses[3]), np.mean(val_losses[4]), np.mean(val_losses[5]), np.mean(val_losses[6]), np.mean(val_losses[7])])
-
-
+        
+        
         for i in range(8):
             overall_val_loss[i].append(np.mean(val_losses[i]))
         print("finished validation with mean loss = {}".format(np.mean(val_losses[0])))
