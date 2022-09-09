@@ -50,7 +50,7 @@ class Unet_3D(nn.Module):
         #self.dsv1 = nn.Conv3d(in_channels=filters[0], out_channels=1, kernel_size=1)
         self.final = Output_block_binary(filters[0], 1)
         
-        self.final_dsv = Output_block_binary(4, 1)
+        self.final_dsv = Output_block_binary(3, 1)
 
         
 
