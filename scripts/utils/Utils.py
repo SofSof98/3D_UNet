@@ -13,16 +13,25 @@ from medpy.metric.binary import hd, dc, asd, assd, precision,\
     sensitivity, specificity
 
 ## add your meand and sd in the function
-def cut_pet_old(pet_array, prostate_array, pitch=5, new_size=64,
+def cut_pet_old(opt,pet_array, prostate_array, pitch=5, new_size=64,
             normalization='local', n_channel = 1, train=False, concat=False):
 
  	
-    if n_channel == 1:
+    if  n_channel > 1 and opt.rs == 2020:
+        std = 6.211471196036908
+        # Arithmetic mean to manually change.
+        mean = 1.8105808395450398
+    elif  n_channel > 1 and  opt.rs == 2021:
+        std = 6.947726866705141
+        # Arithmetic mean to manually change.
+        mean = 1.8001914074865437
+    elif  n_channel > 1 and opt.rs == 2022:
+        std = 7.296833011765431
+        mean = 1.8988180241342318
+    elif  n_channel == 1 and opt.rs == 2020:
         mean =  0.10223833057966272
-        sd = 0.9130426563428523
-    elif n_channel > 1:
-    	mean=1.8105808395450398
-    	sd=6.211471196036908
+        std= 0.9130426563428523
+
     prostate = np.where(prostate_array == 1)
     # 3D array (x,y,z) for prostate segmenatation
     x = prostate[0]
@@ -69,19 +78,26 @@ def cut_pet_old(pet_array, prostate_array, pitch=5, new_size=64,
     else:
         return  np.float32(pet_cut)
 
-def cut_pet(pet_array, prostate_array, pitch=5, new_size=64,
+def cut_pet(opt,pet_array, prostate_array, pitch=5, new_size=64,
             normalization='local', n_channel = 1, train=False, concat=False):
+ 
 
-
-    if n_channel == 1:
+    if  n_channel > 1 and opt.rs == 2020:
+        std = 6.211471196036908
+        # Arithmetic mean to manually change.
+        mean = 1.8105808395450398
+    elif  n_channel > 1 and  opt.rs == 2021:
+        std = 6.947726866705141
+        # Arithmetic mean to manually change.
+        mean = 1.8001914074865437
+    elif  n_channel > 1 and opt.rs == 2022:
+        std = 7.296833011765431
+        mean = 1.8988180241342318   
+    elif  n_channel == 1 and opt.rs == 2020:
         mean =  0.10223833057966272
-        sd= 0.9130426563428523
-    elif n_channel > 1:
-        mean=1.8105808395450398
-        sd=6.211471196036908
-
-
+        std= 0.9130426563428523
     prostate = np.where(prostate_array == 1)
+
     # 3D array (x,y,z) for prostate segmenatation
     x = prostate[0]
     y = prostate[1]
@@ -127,7 +143,7 @@ def cut_pet(pet_array, prostate_array, pitch=5, new_size=64,
     if normalization == 'local':
         pet_cut = (pet_cut - pet_cut.min()) / (pet_cut.max() - pet_cut.min())
     elif normalization == 'global':
-        pet_cut = (pet_cut - mean) / sd
+        pet_cut = (pet_cut - mean) / std
 
     if concat:
         prostate_cut = prostate_array[min_x:max_x, min_y:max_y, min_z:max_z]
@@ -228,8 +244,8 @@ def divide_data(max_idx, opt):
     idx = np.arange(max_idx)
 
     # Planting a seed for reproducibility.
-    np.random.seed(2020)
-    torch.manual_seed(2020)
+    np.random.seed(opt.rs)
+    torch.manual_seed(opt.rs)
     # if torch.cuda.is_available():
       # torch.backends.cudnn.deterministic = True
       #torch.backends.cudnn.benchmark = False
@@ -357,7 +373,7 @@ def update_learning_rate(scheduler, metric=None, epoch=None):
 
         
 def set_loss(opt, device):
-    if opt.loss.lower() not in ["binary_cross_entropy", "dice", "dice_bce", "iou","tversky"]:
+    if opt.loss.lower() not in ["binary_cross_entropy", "dice", "dice_bce", "iou","tversky","focal_tv"]:
         sys.exit('Value for loss_fn must be either of {"binary_cross_entropy", "dice", "dice_bce", "iou","tversky"}')
     if opt.loss == "binary_cross_entropy":
         loss_fn = torch.nn.BCELoss()
@@ -369,6 +385,8 @@ def set_loss(opt, device):
         loss_fn = metrics.IoU_loss
     elif opt.loss.lower() == "tversky":
         loss_fn = metrics.Tversky_loss
+    elif  opt.loss.lower() == "focal_tv":
+        loss_fn = metrics.focal_tv_loss
     return loss_fn
 
 def set_optimizer(opt, model_params):

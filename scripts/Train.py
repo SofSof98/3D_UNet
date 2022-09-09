@@ -46,14 +46,14 @@ def train(opt):
     training = dict(train = train_patients, validation = validation_patients,
                     test = test_patients)
 
-    training_loader = rd.DataLoader(list_IDs=training['train'], directory=opt.data_dir,
+    training_loader = rd.DataLoader(opt,list_IDs=training['train'], directory=opt.data_dir,
                                  dtype = opt.image_type,norm=opt.normalize,augmentation=opt.augmentation,n_channels=opt.n_channels,
                                  train=True)
 
     print('loading data .....')
     x_train, mask_train =  training_loader.Loading()
 
-    validation_loader = rd.DataLoader(training['validation'],directory=opt.data_dir,
+    validation_loader = rd.DataLoader(opt,training['validation'],directory=opt.data_dir,
                                  dtype = opt.image_type,norm=opt.normalize,augmentation=False,n_channels=opt.n_channels,
                                  train=True)
 

@@ -9,8 +9,9 @@ from data_augmentation import *
 ## Data Loader
 
 class DataLoader():
-    def __init__(self, list_IDs, directory, dtype, norm,
+    def __init__(self, opt,list_IDs, directory, dtype, norm,
                  dim=(64, 64, 64), n_channels=1, train=True, augmentation=True):
+        self.opt = opt
         self.dim = dim
         self.directory = directory
         self.list_IDs = list_IDs
@@ -19,7 +20,6 @@ class DataLoader():
         self.n_channels = n_channels
         self.train = train
         self.augmentation = augmentation
-
     def Loading(self):
         if self.train:
             X, y = self.Data_loading()
@@ -53,7 +53,7 @@ class DataLoader():
             contour, _ = image_loader(self.directory + '/' + ID + '/prostate.' + self.dtype)
 
             # set everything outside the prostate to zero
-            x_cut, prost_cut  = cut_pet(pet, contour, n_channel =self.n_channels , normalization=self.norm,concat=True)
+            x_cut, prost_cut  = cut_pet(self.opt,pet, contour, n_channel =self.n_channels , normalization=self.norm,concat=True)
             if self.n_channels ==1:
                 x_cut =  np.where(prost_cut == 1.0, x_cut, 0.0)
             elif self.n_channels > 1:
@@ -65,7 +65,7 @@ class DataLoader():
                 # Store cut lesion
                 lesion, _ = image_loader(self.directory + '/' + ID + '/l1.' + self.dtype)
                 #lesion = np.multiply(lesion, contour)
-                y_cut = cut_pet(lesion, contour,n_channel =self.n_channels , normalization=None)
+                y_cut = cut_pet(self.opt,lesion, contour,n_channel =self.n_channels , normalization=None)
                 y_cut = np.where(y_cut > 0, 1., 0.)
                 y_cut = np.where(prost_cut == 1.,np.float32(y_cut), 0.)
                 

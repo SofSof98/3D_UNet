@@ -8,14 +8,14 @@
 #SBATCH --error="/beegfs/scratch/ric.medicinanucleare/mongardi.sofia/Thesis/Thesis/sbatch_job/unet.err"
 #SBATCH --output="/beegfs/scratch/ric.medicinanucleare/mongardi.sofia/Thesis/Thesis/sbatch_job/unet.out"
 
-python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0005/  --loss dice --augmentation False  --shuffle --lr_adam 0.0005 --epochs 300 --eps 1e-3 --model models.Unet_R2 --batch_size 1 --batchnorm True --n_channels 2 
-python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0003/  --loss dice --augmentation False  --shuffle --lr_adam 0.0003 --epochs 300 --eps 1e-3 --model models.Unet_R2 --batch_size 1 --batchnorm True  --n_channels 2  
-python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0001/  --loss dice --augmentation False  --shuffle --lr_adam 0.0001 --epochs 300 --eps 1e-3 --model models.Unet_R2 --batch_size 1 --batchnorm True  --n_channels 2 
+#python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0005/  --loss dice --augmentation False  --shuffle --lr_adam 0.0005 --epochs 300 --eps 1e-3 --model models.Unet_R2 --batch_size 1 --batchnorm True --n_channels 2 
+#python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0003/  --loss dice --augmentation False  --shuffle --lr_adam 0.0003 --epochs 300 --eps 1e-3 --model models.Unet_R2 --batch_size 1 --batchnorm True  --n_channels 2  
+#python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0001/  --loss dice --augmentation False  --shuffle --lr_adam 0.0001 --epochs 300 --eps 1e-3 --model models.Unet_R2 --batch_size 1 --batchnorm True  --n_channels 2 
 
-python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0005_bs2/  --loss dice --augmentation False  --shuffle --lr_adam 0.0005 --epochs 300 --eps 1e-3 --model models.Unet_R2  --batchnorm True --n_channels 2  --batch_size 
-python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0003_bs2/  --loss dice --augmentation False  --shuffle --lr_adam 0.0003 --epochs 300 --eps 1e-3 --model models.Unet_R2  --batchnorm True  --n_channels 2  --batch_size 2
+python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0005_bs2/  --loss dice --augmentation False  --shuffle --lr_adam 0.0005 --epochs 300 --eps 1e-3 --model models.Unet_R2  --batchnorm True --n_channels 2  --batch_size 2 
+#python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0003_bs2/  --loss dice --augmentation False  --shuffle --lr_adam 0.0003 --epochs 300 --eps 1e-3 --model models.Unet_R2  --batchnorm True  --n_channels 2  --batch_size 2
 
-python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0001_bs2/  --loss dice --augmentation False  --shuffle --lr_adam 0.0001 --epochs 300 --eps 1e-3 --model models.Unet_R2  --batchnorm True  --n_channels 2  --batch_size 2
+#python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0001_bs2/  --loss dice --augmentation False  --shuffle --lr_adam 0.0001 --epochs 300 --eps 1e-3 --model models.Unet_R2  --batchnorm True  --n_channels 2  --batch_size 2
 
 
 python3 scripts/main.py --data_dir data/Images_cnn --txt_dir data/images.txt  --results_dir results_2in/train_results_adam_0.0005_bs4/  --loss dice --augmentation False  --shuffle --lr_adam 0.0005 --epochs 300 --eps 1e-3 --model models.Unet_R2  --batchnorm True  --n_channels 2 --batch_size 4

@@ -39,7 +39,7 @@ def test(opt):
     #test = [3]
     test_patients = [files[i] for i in test]
     testing = dict(test = test_patients)
-    test_loader = rd.DataLoader(list_IDs=testing['test'], directory=opt.data_dir,
+    test_loader = rd.DataLoader(opt,list_IDs=testing['test'], directory=opt.data_dir,
                                  dtype = opt.image_type,norm=opt.normalize,augmentation=None,
                                  n_channels=opt.n_channels,train=True)
 

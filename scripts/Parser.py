@@ -58,7 +58,7 @@ def get_parser():
     parser.add_argument('--direct_test', type=arg_boolean, default=True, help='....')
     parser.add_argument('--dv', type=arg_boolean, default=False, help='....')
     parser.add_argument('--model-args',type=dict, default=dict(), help='the arguments of model')
-  
+    parser.add_argument('--rs', type=int, default='2020', required=False, help='set seed') 
     return parser
 
 def arg_boolean(v):
