@@ -79,11 +79,11 @@ class Unet_3D(nn.Module):
 
       if self.deep_supervision:
              
-         dsv4 = self.dsv4(up4)
+         #dsv4 = self.dsv4(up4)
          dsv3 = self.dsv3(up3)
          dsv2 = self.dsv2(up2)
          dsv1 = self.final(up1)
-         outputs = self.final_dsv(torch.cat([dsv1,dsv2,dsv3,dsv4], dim=1))
+         outputs = self.final_dsv(torch.cat([dsv1,dsv2,dsv3], dim=1))
 
 
       else:
