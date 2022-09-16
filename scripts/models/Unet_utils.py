@@ -31,7 +31,7 @@ class Up_Conv_3D_block(nn.Module):
     def __init__(self, in_size, mid_size, out_size, is_batchnorm=True, batchNormObject = nn.BatchNorm3d, dr =0.0):
         super(Up_Conv_3D_block, self).__init__()
         
-        self.dr = torch.nn.Dropout(p=dr)
+        self.dr = torch.nn.Dropout(p=0.0)
         self.up = nn.ConvTranspose3d(in_size, mid_size, kernel_size=(2,2,2), stride=(2,2,2))
         self.up_conv = Conv_3D_block(mid_size + out_size, out_size, out_size, is_batchnorm, batchNormObject, dr)
         
