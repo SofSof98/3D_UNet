@@ -121,3 +121,53 @@ def nifty_loader(image_dir):
 def nrrd_loader(image_dir):
     image, header = nrrd.read(image_dir)
     return image, header
+
+
+
+class PatientLoader():
+    def __init__(self,opt, ID, directory, dtype, norm,
+                 dim=(64, 64, 64), n_channels=1, train=True, augmentation=True):
+        self.opt = opt
+        self.dim = dim
+        self.directory = directory
+        self.ID = ID
+        self.dtype = dtype
+        self.norm = norm
+        self.n_channels = n_channels
+        self.train = train
+        self.augmentation = augmentation
+    def Loading(self):
+        X, pet_shape, pet_header = self.Data_loading()
+            # printing(X, y)
+        return X, pet_shape, pet_header
+
+    def Data_loading(self):
+        'Generates data containing batch_size samples'  # X : (n_samples, *dim, n_channels)
+        # Initialization
+        
+        if self.dtype == 'nrrd':
+            image_loader = nrrd_loader
+        elif self.dtype == 'nifti':
+            image_loader = nifti_loader
+        else:
+            return NotImplementedError('loader not implemented for this image data type')
+        
+  
+        pet, pet_header = image_loader(self.directory + '/' + self.ID + '/PET.' + self.dtype)
+            
+        contour, _ = image_loader(self.directory + '/' + self.ID + '/prostate.' + self.dtype)
+
+        # set everything outside the prostate to zero
+        x_cut, prost_cut,pet_shape  = cut_pet(self.opt,pet, contour, n_channel =self.n_channels , normalization=self.norm,concat=True,prediction=True)
+        if self.n_channels ==1:
+            x_cut =  np.where(prost_cut == 1.0, x_cut, 0.0)
+        elif self.n_channels > 1:
+            x_cut = np.expand_dims(x_cut,axis=0)
+            prost_cut = np.expand_dims(prost_cut,axis=0)
+            x_cut = np.concatenate((x_cut,prost_cut),axis=0)
+        
+
+            X = torch.tensor(np.float32(x_cut), dtype=torch.float32)
+        
+
+        return X, pet_shape, pet_header

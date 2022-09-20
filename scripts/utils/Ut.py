@@ -79,7 +79,8 @@ def cut_pet_old(opt,pet_array, prostate_array, pitch=5, new_size=64,
         return  np.float32(pet_cut)
 
 def cut_pet(opt,pet_array, prostate_array, pitch=5, new_size=64,
-            normalization='local', n_channel = 1, train=False, concat=False, prediction=False):
+            normalization='local', n_channel = 1, train=False, concat=False):
+ 
 
     if  n_channel > 1 and opt.rs == 2020:
         std = 6.211471196036908
@@ -139,26 +140,16 @@ def cut_pet(opt,pet_array, prostate_array, pitch=5, new_size=64,
             min_z -= 1
     pet_cut = pet_array[min_x:max_x, min_y:max_y, min_z:max_z]
     pet_cut =  np.float32(pet_cut)
-    old_pet_shape = (pet_array.shape, min_x, max_x, min_y, max_y, min_z, max_z)
-
     if normalization == 'local':
         pet_cut = (pet_cut - pet_cut.min()) / (pet_cut.max() - pet_cut.min())
     elif normalization == 'global':
         pet_cut = (pet_cut - mean) / std
 
-    if prediction and concat:
-        prostate_cut = prostate_array[min_x:max_x, min_y:max_y, min_z:max_z]
-        return  np.float32(pet_cut),np.float32(prostate_cut), old_pet_shape
-
-    # pet = tf.convert_to_tensor(pet_cut, dtype = 'float32')
-    # print(tf.shape(pet))
-
-    elif concat:
+    if concat:
         prostate_cut = prostate_array[min_x:max_x, min_y:max_y, min_z:max_z]
         return  np.float32(pet_cut),np.float32(prostate_cut)
-        
-    elif prediction:
-        return  np.float32(pet_cut),old_pet_shape
+    # pet = tf.convert_to_tensor(pet_cut, dtype = 'float32')
+    # print(tf.shape(pet))
     else:
         return  np.float32(pet_cut)
 
