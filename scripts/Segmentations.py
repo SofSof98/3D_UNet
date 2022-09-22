@@ -50,7 +50,7 @@ def prediction(opt):
     
     
  
-
+   
 
 
     num_classes = 1
@@ -63,7 +63,7 @@ def prediction(opt):
 
     
     model = Training_Model(opt,model, train=False)
-    
+    forward_computation_times = [] 
     
     print("started testing...")
     with torch.no_grad():
@@ -74,16 +74,19 @@ def prediction(opt):
             loader = rd.PatientLoader(opt,idx, directory=opt.data_dir,
                                  dtype = opt.image_type,norm=opt.normalize,augmentation=None,
                                  n_channels=opt.n_channels,train=True)
-
+		
             data, pet_shape, pet_header  = loader.Loading()
             print(pet_shape)
-            model.forward(data)  
+            fw_pass_start = time.time()
+            model.forward(data)
+            fw_pass_end = time.time()
             prediction = model.get_prediction().cpu().detach().numpy()
             prediction = fit_prediction_to_pet(pet_shape, prediction, opt)
             prediction_name = os.path.join(results_path,idx + '_pred')            
-            nrrd.write(prediction_name, prediction, pet_header)
+            #nrrd.write(prediction_name, prediction, pet_header)
             print("Saved as {}".format(prediction_name))
-
+            forward_computation_times.append(fw_pass_end - fw_pass_start)
+        print(np.mean(forward_computation_times))
 if __name__ == "__main__":
   
     import argparse
