@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from medpy.metric.binary import hd, dc, asd, assd, precision,\
     sensitivity, specificity
 
+# Some of the functions used here are borrowed from https://gitlab.com/dejankostyszyn/prostate-gtv-segmentation/-/tree/master
 ## add your meand and sd in the function
 def cut_pet_old(opt,pet_array, prostate_array, pitch=5, new_size=64,
             normalization='local', n_channel = 1, train=False, concat=False):
