@@ -52,7 +52,8 @@ def train(opt):
 
     params = {'batch_size': opt.batch_size,
           'shuffle': True,
-          'num_workers': 6}
+          'num_workers': 6,
+          'pin_memory':True}
     training_generator = torch.utils.data.DataLoader(training_loader, **params)
 
     validation_loader = rd.DatasetLoader(opt,training['validation'],directory=opt.data_dir,
