@@ -1,4 +1,4 @@
-import ReadData as rd
+import ReadData_generator as rd
 import numpy as np
 import pandas as pd
 from matplotlib import colors
@@ -34,10 +34,10 @@ def train(opt):
     
     
     # Divide data into training, validation and test set.
-    train, validation, test = utils.divide_data(len(files), opt)
-    #train = [0,1]
-    #validation = [2,3]
-    #test = [3]
+    #train, validation, test = utils.divide_data(len(files), opt)
+    train = [0,1]
+    validation = [1]
+    test = [1]
     train_patients = [files[i] for i in train]
     validation_patients = [files[i] for i in validation]
     test_patients = [files[i] for i in test]
@@ -46,18 +46,20 @@ def train(opt):
     training = dict(train = train_patients, validation = validation_patients,
                     test = test_patients)
 
-    training_loader = rd.DataLoader(opt,list_IDs=training['train'], directory=opt.data_dir,
+    training_loader = rd.DatasetLoader(opt,list_IDs=training['train'], directory=opt.data_dir,
                                  dtype = opt.image_type,norm=opt.normalize,augmentation=opt.augmentation,n_channels=opt.n_channels,
                                  train=True)
 
-    print('loading data .....')
-    x_train, mask_train =  training_loader.Loading()
+    params = {'batch_size': opt.batch_size,
+          'shuffle': True,
+          'num_workers': 6}
+    training_generator = torch.utils.data.DataLoader(training_loader, **params)
 
-    validation_loader = rd.DataLoader(opt,training['validation'],directory=opt.data_dir,
+    validation_loader = rd.DatasetLoader(opt,training['validation'],directory=opt.data_dir,
                                  dtype = opt.image_type,norm=opt.normalize,augmentation=False,n_channels=opt.n_channels,
                                  train=True)
 
-    x_val, mask_val = validation_loader.Loading()
+    validation_generator = torch.utils.data.DataLoader(validation_loader, **params)
 
     nr_of_epochs = opt.epochs
 
@@ -105,26 +107,20 @@ def train(opt):
         train_losses = []
         train_dice = []
 
-        for iteration, idx in enumerate(train,1):
+        for data, lesion in training_generator:
             # Load data.
-            data, lesion = x_train[iteration-1], mask_train[iteration-1]
-            p_id = train_patients[iteration-1]
-
-            if opt.batch_size == 1:
-                model.optimize_parameters(data, lesion)
-                
-            elif opt.batch_size > 1:
-                model.optimize_parameters_accumulate_grd(data, lesion, iteration, train)
             
-
+            model.optimize_parameters(data, lesion)
+                
+            
             train_losses.append(model.get_loss())
             train_dice.append(model.get_score(lesion))
 
-            model.print_stats(epoch, train_dice[-1], idx,iteration)
+            model.print_stats(epoch, train_dice[-1], '','')
 
             with open(results_path + "/training_results.csv", "a", newline="") as file:
                 writer = csv.writer(file, delimiter=",", quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                writer.writerow([epoch, iteration, train_losses[-1], idx, p_id])
+                writer.writerow([epoch, '', train_losses[-1], '', ''])
 
         utils.save_checkpoint(results_path, epoch, 'final_model', best_epoch, best_dice, best_epoch_loss,
                         best_val_loss, model.model, model.optimizer)
@@ -149,11 +145,8 @@ def train(opt):
         val_losses = [[],[],[],[],[],[],[],[],[]]
         val_loss =[]
         with torch.no_grad():
-            for idx in range(len(validation)):
-                
-                data, lesion = x_val[idx], mask_val[idx]
-                p_id = validation_patients[idx]
         
+            for data, lesion in validation_generator:        
 
                 model.validate(data, lesion)
                 val_losses[0].append(model.get_loss())
@@ -163,8 +156,8 @@ def train(opt):
                 model.print_val_stats(epoch, val_losses[1][-1], val_losses[8][-1])
                 with open(results_path + "/validation_results.csv", "a", newline="") as file:
                     writer = csv.writer(file, delimiter=",", quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                    writer.writerow([epoch, idx, val_losses[0][-1], val_losses[1][-1], val_losses[8][-1], val_losses[2][-1],\
-                        val_losses[3][-1], val_losses[4][-1], val_losses[5][-1], val_losses[6][-1], val_losses[7][-1], p_id])
+                    writer.writerow([epoch, '', val_losses[0][-1], val_losses[1][-1], val_losses[8][-1], val_losses[2][-1],\
+                        val_losses[3][-1], val_losses[4][-1], val_losses[5][-1], val_losses[6][-1], val_losses[7][-1], ''])
                 
         # update learning rate
         if opt.scheduling_lr is not None:

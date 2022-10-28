@@ -15,7 +15,7 @@ def random_rotation(x, y, angle, fill_mode='nearest', cval=0., interpolation_ord
             x = np.squeeze(x)
             x_rot = scipy.ndimage.interpolation.rotate(x, theta, order=interpolation_order, mode=fill_mode, axes=(0, 1),
                                                    cval=cval, reshape=False)
-        elif:
+        else:
             x = x[0]
             xp = x[1]
             x_rot = scipy.ndimage.interpolation.rotate(x, theta, order=interpolation_order, mode=fill_mode, axes=(0, 1),
@@ -47,7 +47,7 @@ def random_shift(x, y, x_shift_range, y_shift_range, fill_mode='nearest', cval=0
             x = np.squeeze(x)
             x_shifted = scipy.ndimage.shift(x, shift, output=None, order=interpolation_order, mode=fill_mode, cval=cval,
                                         prefilter=True)
-        elif:
+        else:
             x = x[0]
             xp = x[1]
             x_shifted = scipy.ndimage.shift(x, shift, output=None, order=interpolation_order, mode=fill_mode, cval=cval,
@@ -86,7 +86,7 @@ def random_zoom(x, y, zoom_range, fill_mode='nearest', cval=0., interpolation_or
             x = np.squeeze(x)
             x_zoomed = scipy.ndimage.zoom(x, zoom, output=None, order=interpolation_order, mode=fill_mode, cval=cval,
                                       prefilter=True)
-        elif:
+        else:
             x = x[0]
             xp = x[1]
             x_zoomed = scipy.ndimage.zoom(x, zoom, output=None, order=interpolation_order, mode=fill_mode, cval=cval,
@@ -156,7 +156,7 @@ def Data_Augmentation(x, y, index, fill_mode = 'nearest', order = 3, cval = 0.,
             if x.shape[0]==1:
                 x = np.squeeze(x)
                 x = flip_axis(x, img_col_axis)
-            elif:
+            else:
                 x = flip_axis(x[0], img_col_axis)
                 xp = flip_axis(x[1], img_col_axis)
                 x = np.concatenate((x,xp),axis=0)
@@ -171,7 +171,7 @@ def Data_Augmentation(x, y, index, fill_mode = 'nearest', order = 3, cval = 0.,
             if x.shape[0]==1:
                 x = np.squeeze(x)
                 x = flip_axis(x, img_col_axis)
-            elif:
+            else:
                 x = flip_axis(x[0], img_col_axis)
                 xp = flip_axis(x[1], img_col_axis)
                 x = np.concatenate((x,xp),axis=0)
