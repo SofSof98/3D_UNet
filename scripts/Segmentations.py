@@ -83,7 +83,7 @@ def prediction(opt):
             prediction = model.get_prediction().cpu().detach().numpy()
             prediction = fit_prediction_to_pet(pet_shape, prediction, opt)
             prediction_name = os.path.join(results_path,idx + '_pred')            
-            #nrrd.write(prediction_name, prediction, pet_header)
+            nrrd.write(prediction_name, prediction, pet_header)
             print("Saved as {}".format(prediction_name))
             forward_computation_times.append(fw_pass_end - fw_pass_start)
         print(np.mean(forward_computation_times))

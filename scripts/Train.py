@@ -79,6 +79,7 @@ def train(opt):
     best_epoch = 0
     best_dice = 0.0
     best_val_loss = 1.0
+    dice_best_val_loss = 0.0
     best_epoch_loss = 0
     best_ratio = 0.0
     best_epoch_ratio = 0
@@ -198,6 +199,7 @@ def train(opt):
 
         if  np.mean(val_losses[0]) < best_val_loss:
             best_val_loss = np.mean(val_losses[0])
+            dice_best_val_loss = np.mean(val_losses[1])
             best_epoch_loss = epoch
             loss_model_name = "best_loss_model"
             utils.save_checkpoint(results_path, epoch, loss_model_name , best_epoch, best_dice, best_epoch_loss,
@@ -230,7 +232,7 @@ def train(opt):
             [overall_val_loss[6], "val (sensitivity)"],\
             [overall_val_loss[7], "val (specificity)"])
                 
-    utils.save_rewards(results_path,best_epoch_loss +1 , best_val_loss,  best_epoch +1 , best_dice, best_epoch_ratio +1, best_ratio)
+    utils.save_rewards(results_path,best_epoch_loss +1 , best_val_loss, dice_best_val_loss, best_epoch +1 , best_dice, best_epoch_ratio +1, best_ratio)
     end_time = time.time()
     print("Completed training and validation in {}s".format(end_time - start_time))
     print("Completed training with validation mean dice {} at epoch {}".format(best_dice, best_epoch + 1))

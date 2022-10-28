@@ -205,11 +205,12 @@ def store_results(results_path, opt,train = True):
 
 
   
-def save_rewards(path,bel,loss, bed, dice, ber, ratio):
+def save_rewards(path,bel,loss,lvd ,bed, dice, ber, ratio):
     json.dump(
         {
             "best epoch loss": bel,
             "best loss": float(loss),
+            "val dice best loss": float(lvd),
             "best epoch dice": bed,
             "best dice": float(dice),
             "best epoch ratio": ber,
