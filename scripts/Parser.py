@@ -19,20 +19,22 @@ def get_parser():
     parser.add_argument('--config',default='config/config.yaml',required=False, help='path to the configuration file. If None, default settings will be used')
     parser.add_argument('--test_batch_size', type=int, default=1, help='test batch size')
     parser.add_argument('--loss', type=str, default='dice', required=False, help='Choose loss function: {"binary_cross_entropy", "dice", "dice_bce", "iou","tversky"}')
-    parser.add_argument('--dim', type=int, default=[64,64,64], required=False, help='Perform Data Augmentation')
-    parser.add_argument('--model', type=str, default='models.Unet', required=False, help='....')
-    parser.add_argument('--best_model', type=str, default='loss', required=False, help='Name for the trained model.')
-    parser.add_argument('--ckpt', type=str, default='ckpt/best_loss_model.ckpt', required=False, help='Name for the trained model.')
-    parser.add_argument('--filter_scale', type=int, default=1, required=False, help='.....')
-    parser.add_argument('--n_channels', type=int, default=1, required=False, help='.....')
-    parser.add_argument('--norm_type', type=str, default='group', required=False, help='group,batch,instance,layer')
-    parser.add_argument('--n_groups', type=int, default='16', required=False, help='Number of groups for Group Normalization, n_groups = 1 (layer),')
+    parser.add_argument('--dim', type=int, default=[64,64,64], required=False, help='Dimensions input images')
+    parser.add_argument('--model', type=str, default='models.Unet', required=False, help='Name of the model to train or test')
+    parser.add_argument('--best_model', type=str, default='loss', required=False, help='Name for the trained model to test: {"loss", "dice", "ratio"}.')
+    parser.add_argument('--ckpt', type=str, default='ckpt/best_loss_model.ckpt', required=False, help='Ignore.')
+    parser.add_argument('--filter_scale', type=int, default=1, required=False, help='Value used to scale the number of filters for each layer in the network')
+    parser.add_argument('--n_channels', type=int, default=2, required=False, help='number of input channels')
+    parser.add_argument('--batchnorm', type=arg_boolean, default=False, help='normalize layer output')
+    parser.add_argument('--norm_type', type=str, default='group', required=False, help='Type of normalization:{"group", "batch"})
+    parser.add_argument('--n_groups', type=int, default='16', required=False, help='Number of groups for Group Normalization, n_groups = 1 (layer)')
+    parser.add_argument('--shuffle', action='store_true', required=False, help='Shuffle before splitting?')
      # optim
     parser.add_argument('--epochs', type=int, default=1000, required=False, help='Number of training epochs')
     parser.add_argument('--start_epoch', type=int, default=0, required=False, help='Epoch to start training from') 
     parser.add_argument('--optimizer', type=str, default='adam', required=False, help='Choose optimizer {adam, adamax,adagrad, SGD}')
     parser.add_argument('--weight_decay', type=float, default=0., required=False, help='Weight decay for optimizer.')
-    parser.add_argument('--shuffle', action='store_true', required=False, help='Shall the data be shuffled?')
+   
     # parser.add_argument('--scheduler', type=float, default=0, help='initial learning rate')
     parser.add_argument('--lr_SDG', type=float, default=0.1, help='initial learning rate')
     parser.add_argument('--momentum_SDG', type=float, default=0.9, help='initial momentum')
@@ -44,21 +46,21 @@ def get_parser():
     parser.add_argument('--lr_adagrad', type=float, default=0.01, help='initial learning rate') # default eps for adagrad
     parser.add_argument('--lr_adamax', type=float, default=0.002, help='initial learning rate') 
     parser.add_argument( '--step', type=int, default=250,nargs='+', help='the epoch where optimizer reduce the learning rate')
-    parser.add_argument( '--steps', type=int, default=[100, 200],nargs='+', help='the epoch where optimizer reduce the learning rate')
+    parser.add_argument( '--steps', type=int, default=[100, 200],nargs='+', help='the epochs where optimizer reduce the learning rate')
     parser.add_argument('--nesterov', type=arg_boolean, default=False, help='use nesterov or not')
-    parser.add_argument('--batchnorm', type=arg_boolean, default=False, help='....')
     parser.add_argument('--dr', type=float, default=0.0, help='Dropout rate')
+    parser.add_argument('--dv', type=arg_boolean, default=False, help='Perform deep supervision if allowed')
+
+    
+    parser.add_argument('--direct_test', type=arg_boolean, default=True, help='Perform test directly when calling main.py')
+    parser.add_argument('--rs', type=int, default='2020', required=False, help='set seed')
+                        
     # processor
-    parser.add_argument('--phase', default='train', help='must be train or test')
+    parser.add_argument('--phase', default='train', help='Ignore')
+    parser.add_argument('--training', type=arg_boolean, default=True, help='Ignore')
+    parser.add_argument('--model-args',type=dict, default=dict(), help='Ignore')
+
     
-    
-    # visulize and debug
-  
-    parser.add_argument('--training', type=arg_boolean, default=True, help='training or testing mode')
-    parser.add_argument('--direct_test', type=arg_boolean, default=True, help='....')
-    parser.add_argument('--dv', type=arg_boolean, default=False, help='....')
-    parser.add_argument('--model-args',type=dict, default=dict(), help='the arguments of model')
-    parser.add_argument('--rs', type=int, default='2020', required=False, help='set seed') 
     return parser
 
 def arg_boolean(v):
