@@ -94,7 +94,7 @@ def train(opt):
     output_shape = opt.dim 
     #model = model.Unet_3D(input_shape, output_shape, num_classes, opt)
     model = model.Unet_3D(input_shape, output_shape, opt, num_classes=num_classes)
-    summary(model, imput_size=(1,opt.n_channels,64,64,64))
+    summary(model, input_size=(1,opt.n_channels,64,64,64))
 
     model = Training_Model(opt,model, train=True)
 
