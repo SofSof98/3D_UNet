@@ -26,7 +26,7 @@ def get_parser():
     parser.add_argument('--filter_scale', type=int, default=1, required=False, help='Value used to scale the number of filters for each layer in the network')
     parser.add_argument('--n_channels', type=int, default=2, required=False, help='number of input channels')
     parser.add_argument('--batchnorm', type=arg_boolean, default=False, help='normalize layer output')
-    parser.add_argument('--norm_type', type=str, default='group', required=False, help='Type of normalization:{"group", "batch"})
+    parser.add_argument('--norm_type', type=str, default='group', required=False, help='Type of normalization:{"group", "batch"}')
     parser.add_argument('--n_groups', type=int, default='16', required=False, help='Number of groups for Group Normalization, n_groups = 1 (layer)')
     parser.add_argument('--shuffle', action='store_true', required=False, help='Shuffle before splitting?')
      # optim
