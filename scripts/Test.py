@@ -106,7 +106,7 @@ def test(opt):
             # Writing overall test loss in file.
         with open(results_path + "/test_results.csv", "a", newline="") as file:
                 writer = csv.writer(file, delimiter=",", quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                writer.writerow([idx, np.mean(detailed_test_loss[0]), np.mean(detailed_test_loss[1]), np.median(detailed_test_loss[1]), np.mean(detailed_test_loss[8]), np.median(detailed_test_loss[8]), np.mean(detailed_test_loss[2]), np.median(detailed_test_loss[2]),\
+                writer.writerow([np.mean(detailed_test_loss[0]), np.mean(detailed_test_loss[1]), np.median(detailed_test_loss[1]), np.mean(detailed_test_loss[8]), np.median(detailed_test_loss[8]), np.mean(detailed_test_loss[2]), np.median(detailed_test_loss[2]),\
             np.mean(detailed_test_loss[3]), np.median(detailed_test_loss[3]), np.mean(detailed_test_loss[4]), np.mean(detailed_test_loss[5]), np.mean(detailed_test_loss[6]), np.median(detailed_test_loss[6]),\
             np.mean(detailed_test_loss[7]), np.median(detailed_test_loss[7]), np.std(detailed_test_loss[1]), np.std(detailed_test_loss[2]), np.std(detailed_test_loss[3]), np.std(detailed_test_loss[4]),\
             np.std(detailed_test_loss[5]), np.std(detailed_test_loss[6]), np.std(detailed_test_loss[7])])
